@@ -35,8 +35,7 @@ class _NoteListState extends State<NoteList> {
       _isLoading = true;
     });
 
-    apiResponse = await service.getNotesList();
-
+    apiResponse = await service.getPostsList();
     setState(() {
       _isLoading = false;
     });
@@ -46,7 +45,7 @@ class _NoteListState extends State<NoteList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("List of notes"),
+        title: const Text("List of Posts"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -105,7 +104,7 @@ class _NoteListState extends State<NoteList> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => NoteModify(noteID: posts.userId),
+                        builder: (context) => NoteModify(postID: posts.id),
                       ),
                     );
                   },
