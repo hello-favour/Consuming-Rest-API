@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:consuming_rest_api/models/api_response.dart';
 import 'package:consuming_rest_api/models/new_post.dart';
 import 'package:consuming_rest_api/models/post_data.dart';
+import 'package:consuming_rest_api/models/post_insert.dart';
 import 'package:http/http.dart' as http;
 
 class PostService {
@@ -37,5 +38,22 @@ class PostService {
           error: true, errorMessage: "An error occurred!");
     }).catchError((_) =>
         APIResponse<NewPost>(error: true, errorMessage: "An error occurred"));
+  }
+
+  //CREATE POST
+  Future<APIResponse<bool>> createPost(PostInsert itemPost) {
+    return http
+        .post(
+      Uri.parse('$API/posts'),
+      body: json.encode(itemPost.toJson()),
+      headers: headers,
+    )
+        .then((data) {
+      if (data.statusCode == 200) {
+        return APIResponse<bool>(data: true);
+      }
+      return APIResponse<bool>(error: true, errorMessage: "An error occurred!");
+    }).catchError((_) =>
+            APIResponse<bool>(error: true, errorMessage: "An error occurred"));
   }
 }

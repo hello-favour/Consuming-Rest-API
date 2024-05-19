@@ -1,4 +1,5 @@
 import 'package:consuming_rest_api/models/new_post.dart';
+import 'package:consuming_rest_api/models/post_insert.dart';
 import 'package:consuming_rest_api/services/post_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -98,8 +99,55 @@ class _NoteModifyState extends State<NoteModify> {
                     width: double.infinity,
                     height: 40,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        if (isEditing) {
+                          //update post
+                        } else {
+                          setState(() {
+                            isLoading = true;
+                          });
+
+                          final posts = PostInsert(
+                            userId: post!.userId,
+                            title: _titleController.text.trim(),
+                            body: _bodyController.text.trim(),
+                          );
+
+                          final result = await postService.createPost(posts);
+
+                          if (!mounted)
+                            return; // Check if the widget is still mounted
+
+                          setState(() {
+                            isLoading = false;
+                          });
+
+                          const title = "Done";
+                          final text = result.error
+                              ? (result.errorMessage ?? 'An error occurred')
+                              : 'Your post was created';
+
+                          // Show dialog without crossing async gap
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text(title),
+                              content: Text(text),
+                              actions: [
+                                ElevatedButton(
+                                  child: const Text("Ok"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            ),
+                          ).then((data) {
+                            if (result.data == true && mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          });
+                        }
                       },
                       child: const Text("Submit"),
                     ),

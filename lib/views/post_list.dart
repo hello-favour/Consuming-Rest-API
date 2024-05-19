@@ -49,11 +49,13 @@ class _NoteListState extends State<NoteList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const NoteModify(),
-            ),
-          );
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => const NoteModify(),
+                ),
+              )
+              .then((_) => _fetchPosts());
         },
         child: const Icon(Icons.add),
       ),
